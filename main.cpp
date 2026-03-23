@@ -14,8 +14,10 @@ int main() {
   };
 
   size_t count = sizeof(tests) / sizeof(test_f);
+  std::cout << std::boolalpha;
 
   for (size_t i = 0; i < count; ++i) {
     std::cout << tests[i]() << " : " << i << '\n';
   }
 }
+

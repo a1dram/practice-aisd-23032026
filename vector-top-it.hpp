@@ -8,14 +8,17 @@ namespace topit {
     Vector();
     ~Vector();
 
+    Vector(const Vector< T >&) = delete;
+    Vector< T >& operator=(const Vector< T >& ) = delete;
+    
     bool isEmpty() const noexcept;
 
     private:
       T* data_;
       size_t size_;
-      size_t capacity_;
+      size_t capacity_;       
   };
-
+    
   template < class T >
   bool operator==(const Vector<T>& lhs, const Vector<T>& rhs);
 }
@@ -35,3 +38,5 @@ bool topit::Vector< T >::isEmpty() const noexcept {
 }
 
 #endif
+
+
