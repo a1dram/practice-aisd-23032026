@@ -7,6 +7,7 @@ namespace topit {
   {
     Vector();
     explicit Vector(size_t s);
+    explicit Vector(size_t s, const T& val);
     ~Vector();
 
 
@@ -32,6 +33,29 @@ namespace topit {
 }
 
 template< class T >
+T& topit::Vector< T >::at(size_t id) {
+  if (id < getSize()) {
+    return data_[id];
+  }
+  throw std::out_of_range("bad id");
+}
+
+// template< class T >
+// T& topit::Vector< T >::at(size_t id) {
+//   return const_cast< T& >(static_cast< const Vector < T >* >(this)->at(id));
+// }
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// можно и так, но лучше дублирование кода, которое выше
+
+template< class T >
+const T& topit::Vector< T >::at(size_t id) const {
+  if (id < getSize()) {
+    return data_[id];
+  }
+  throw std::out_of_range("bad id");
+}
+
+template< class T >
 topit::Vector< T >::Vector() : data_(nullptr), size_(0), capacity_(0)
 {}
 
@@ -46,6 +70,22 @@ topit::Vector< T >::Vector(size_t size) :
   size_(size),
   capacity_(size) 
 {}
+
+template< class T >
+topit::Vector< T >::Vector(size_t size, const T& val) : 
+  data_(size ? new T[size] : nullptr), 
+  size_(size),
+  capacity_(size)
+{
+  for (size_t i = 0; i < size; ++i) {
+    try {
+      data_[i] = val;
+    } catch (...) {
+      delete[] data_;
+      throw;
+    }
+  }
+}
 
 
 template< class T >
