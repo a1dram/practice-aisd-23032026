@@ -1,9 +1,21 @@
+#include <iostream>
 #include "vector-top-it.hpp"
 
-int main() {
-    using topit::Vector;
-    Vector<int> v1;
-    Vector<int> v2;
+bool test1() {
+  using topit::Vector;
+  Vector< int > v;
+  return v.isEmpty();
 }
 
+int main() {
+  using test_f = bool(*)();
+  test_f tests[] = {
+    test1,
+  };
 
+  size_t count = sizeof(tests) / sizeof(test_f);
+
+  for (size_t i = 0; i < count; ++i) {
+    std::cout << tests[i]() << " : " << i << '\n';
+  }
+}
