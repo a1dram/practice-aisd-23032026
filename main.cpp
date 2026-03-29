@@ -64,6 +64,63 @@ bool test7() {
     return false;
   }
 }
+/// дзшка
+bool test8() {
+  Vector< int > v;
+  return v.getCapacity() == 0;
+}
+
+bool test9() {
+  constexpr size_t size = 3ull;
+  Vector< int > v(size, 7);
+  return v.getCapacity() == size;
+}
+
+bool test10() {
+  Vector< int > v;
+  v.pushBack(10);
+  return v.getSize() == 1 && v.getCapacity() == 1 && v.at(0) == 10;
+}
+
+bool test11() {
+  Vector< int > v;
+  v.pushBack(10);
+  v.pushBack(20);
+  return v.getSize() == 2 && v.getCapacity() == 2 && v.at(0) == 10 && v.at(1) == 20;
+}
+
+bool test12() {
+  constexpr size_t size = 3ull;
+  Vector< int > v(size, 0);
+  v[1] = 42;
+  return v[1] == 42;
+}
+
+bool test13() {
+  constexpr size_t size = 3ull;
+  const Vector< int > v(size, 5);
+  return v[0] == 5 && v[1] == 5 && v[2] == 5;
+}
+
+bool test14() {
+  Vector< int > a(3, 4);
+  Vector< int > b(3, 4);
+  return a == b;
+}
+
+bool test15() {
+  Vector< int > a(3, 4);
+  Vector< int > b(2, 4);
+  return a != b;
+}
+
+bool test16() {
+  Vector< int > a(3, 4);
+  Vector< int > b(3, 4);
+  b[1] = 10;
+  return a != b;
+}
+///
 
 int main() {
   using test_f = bool(*)();
@@ -75,7 +132,18 @@ int main() {
     {test4, "In range access does not generate exceptions"},
     {test5, "Out of range access generates std::out_of_range exception"},
     {test6, "In range access for const vector: same as non-const"},
-    {test7, "Out of range access for const vector: same as non-const"}
+    {test7, "Out of range access for const vector: same as non-const"},
+    /// дзшка
+    {test8, "Default constructed vector capacity is zero"},
+    {test9, "Vector constructed with size has equal capacity"},
+    {test10, "pushBack adds first element and updates size and capacity"},
+    {test11, "pushBack reallocates and preserves previous elements"},
+    {test12, "Non-const operator[] allows element modification"},
+    {test13, "Const operator[] allows element access"},
+    {test14, "Equal vectors compare equal"},
+    {test15, "Vectors with different sizes compare not equal"},
+    {test16, "Vectors with different elements compare not equal"}
+    ///
   };
 
   size_t count = sizeof(tests) / sizeof(case_t);
@@ -85,8 +153,15 @@ int main() {
 
   for (size_t i = 0; i < count; ++i) {
     // std::cout << tests[i].first << " : " << tests[i].second << '\n';
-    bool case_result = tests[i].first;
+    bool case_result = tests[i].first();
     result = result && case_result;
+
+    if (case_result) {
+      ++successes;
+    } else {
+      ++fails;
+    }
+
     std::cout << case_result;
     std::cout << ": ";
     std::cout << tests[i].second << '\n';
