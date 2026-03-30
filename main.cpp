@@ -146,6 +146,23 @@ bool test19() {
   return cpy_v == yav && cpy_yav == v;
 }
 
+bool test20() {
+  Vector< int > v(2, 0);
+  Vector< int > cpy_v(v);
+
+  Vector< int > yav = std::move(v);
+  return yav == cpy_v;
+}
+
+bool test21() {
+  Vector< int > v(2, 0);
+  Vector< int > cpy(v);
+  Vector< int > yav;
+
+  yav = std::move(v);
+  return yav == v;
+}
+
 int main() {
   using test_f = bool(*)();
   using case_t = std::pair< test_f, const char* >;
@@ -170,7 +187,9 @@ int main() {
     /// классная работа 30 03 2026
     {test17, "Copy constuctor"},
     {test18, "Copy assigment operator"},
-    {test19, "Void swap func tests"}
+    {test19, "Void swap func tests"},
+    {test20, "Move constuctor"},
+    {test21, "Move assigment operator"}
     ///
   };
 
