@@ -23,6 +23,11 @@ namespace topit {
 
     size_t getCapacity() const noexcept;
 
+    /// В конце пары делали
+    // Vector< T >& move_assign(Vector< T >& rhs) noexcept;
+    // Vector< T >& unstable_copy_assign(const Vector< T >& rhs);
+    ///
+
     void pushFront(const T& val);
     void pushBack(const T& val);
 
@@ -36,7 +41,7 @@ namespace topit {
     struct VectorIterator; // с const/ не const итераторами
     void insert(VectorIterator pos, const T& val); // 3 штуки (первый)
     void erase(VectorIterator pos); // 3 штуки
-
+    ///
 
     template< class IT >
     void insert(VectorIterator pos, IT begin, IT end); // второй
