@@ -10,13 +10,15 @@ namespace topit {
     Vector();
     explicit Vector(size_t s);
     Vector(size_t s, const T& val);
+    Vector(const Vector< T >& rhs);
     ~Vector();
 
-    Vector(const Vector< T >&) = delete;
-    Vector< T >& operator=(const Vector< T >& ) = delete;
+    Vector(const Vector< T >&);
+    Vector< T >& operator=(const Vector< T >& );
     
     size_t getSize() const noexcept;
     bool isEmpty() const noexcept;
+    void swap(Vector<T>& rhs) noexcept;
 
     /////// дзшка
     size_t getCapacity() const noexcept;
@@ -32,7 +34,7 @@ namespace topit {
     private:
       T* data_;
       size_t size_;
-      size_t capacity_;
+      size_t capacity_;       
   };
 
   /// дзшка  
@@ -108,6 +110,46 @@ topit::Vector< T >::Vector(size_t size, const T& val) :
   }
 }
 
+template< class T>
+topit::Vector< T >::Vector(const Vector< T >& rhs) : Vector(rhs.getSize()) {
+  for (size_t i = 0; i < getSize(); ++i) {
+    data_[i] = rhs.data_[i];
+  }
+}
+
+template< class T >
+void topit::Vector< T >::swap(Vector<T>& rhs) noexcept {
+  std::swap(data_, rhs.data_);
+  std::swap(size_, rhs.size_);
+  std::swap(capacity_, rhs.capacity_);
+}
+
+template< class T >
+topit::Vector< T >& topit::Vector< T >::operator=(const Vector< T >& rhs) {
+  Vector< T > cpy(rhs);
+  swap(cpy);
+  return *this;
+}
+// template< class T>
+// topit::Vector< T >& topit::Vector< T >::operator=(const Vector< T >& rhs) {
+//   T* d = new T[rhs.getSize()];
+
+//   try {
+//     for (size_t i = 0; i < rhs.getSize(); ++i) {
+//       d[i] = rhs.data_[i];
+//     }
+//   } catch (...) {
+//     delete[] d;
+//     throw;
+//   }
+
+//   delete[] data_;
+//   data_ = d;
+//   size_ rhs.getSize();
+//   capacity_ = rhs.getSize();
+//   return *this;
+// }
+
 template< class T >
 T& topit::Vector<T>::operator[](size_t id) noexcept {
   return data_[id];
@@ -177,3 +219,5 @@ bool topit::operator!=(const Vector<T>& lhs, const Vector<T>& rhs) {
 }
 
 #endif
+
+

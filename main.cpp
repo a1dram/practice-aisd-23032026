@@ -122,6 +122,30 @@ bool test16() {
 }
 ///
 
+bool test17() {
+  Vector< int > v(2, 0);
+  Vector<int> yav = v;
+  return yav == v;
+}
+
+bool test18() {
+  Vector< int > v;
+  Vector< int > yav(2, 0);
+  bool res = v != yav;
+  return res && v == yav;
+}
+
+bool test19() {
+  Vector< int > v(2, 0);
+  Vector< int > yav(3, 1);
+
+  Vector< int > cpy_v(v);
+  Vector< int > cpy_yav(yav);
+  v.swap(yav);
+
+  return cpy_v == yav && cpy_yav == v;
+}
+
 int main() {
   using test_f = bool(*)();
   using case_t = std::pair< test_f, const char* >;
@@ -142,7 +166,11 @@ int main() {
     {test13, "Const operator[] allows element access"},
     {test14, "Equal vectors compare equal"},
     {test15, "Vectors with different sizes compare not equal"},
-    {test16, "Vectors with different elements compare not equal"}
+    {test16, "Vectors with different elements compare not equal"},
+    /// классная работа 30 03 2026
+    {test17, "Copy constuctor"},
+    {test18, "Copy assigment operator"},
+    {test19, "Void swap func tests"}
     ///
   };
 
@@ -172,3 +200,4 @@ int main() {
   std::cout << fails << ": failed tests\n";
   std::cout << successes << ": passed tests\n";
 }
+
