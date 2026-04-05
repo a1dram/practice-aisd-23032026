@@ -31,14 +31,14 @@ namespace topit {
     void pushFront(const T& val);
     void pushBack(const T& val);
 
-    /// Домашка с 30032026 (copy/swap, swap уже после того как всё получилось), всё протестировать
+        /// Домашка с 30032026 (copy/swap, swap уже после того как всё получилось), всё протестировать
     void insert(size_t pos, const T& val);
     void insert(size_t pos, const Vector< T >& rhs, size_t b, size_t e); // в заданную позицию вставить диапозон значений, как я понял от b до e
     void erase(size_t pos);
     /// Домашняя работа
     /// 1. Реализовать итераторы для вектора, итераторы не тестировать
     /// 2. Придумать по 3 штуки insert/erase с итераторами ()
-    struct VectorIterator
+    struct VectorIterator // с const/ не const итераторами
     {
       VectorIterator();
       explicit VectorIterator(T* ptr);
@@ -69,12 +69,14 @@ namespace topit {
       const T* ptr_;
     };
 
-    void insert(VectorIterator pos, const T& val); // 3 штуки
+    void insert(VectorIterator pos, const T& val); // 3 штуки (первый)
+    void insert(VectorIterator pos, size_t count, const T& val); // второй
     template< class IT >
-    void insert(VectorIterator pos, IT begin, IT end); 
+    void insert(VectorIterator pos, IT begin, IT end); // ( третий )
 
     void erase(VectorIterator pos); // 3 штуки
     void erase(VectorIterator first, VectorIterator last);
+    void erase(VectorIterator pos, size_t count);
     ///
 
     VectorIterator begin() noexcept;
@@ -91,6 +93,8 @@ namespace topit {
 
     private:
       size_t iteratorToIndex(VectorIterator pos) const;
+      void insertRangeAtIndex(size_t pos, const T* src, size_t count);
+      void eraseRangeAtIndex(size_t pos, size_t count);
 
       T* data_;
       size_t size_;
@@ -313,6 +317,7 @@ bool topit::operator!=(const Vector<T>& lhs, const Vector<T>& rhs) {
   return !(lhs == rhs);
 }
 
+// insert и erase без векторов
 template< class T >
 void topit::Vector< T >::insert(size_t pos, const T& val)
 {
@@ -347,26 +352,7 @@ void topit::Vector< T >::erase(size_t pos)
   }
   swap(tmp);
 }
-
-template< class T >
-void topit::Vector< T >::insert(size_t pos, const Vector< T >& rhs, size_t b, size_t e)
-{
-  if (pos > size_ || b > e || e > rhs.size_) {
-    throw std::out_of_range("bad range insert");
-  }
-
-  Vector< T > tmp(size_ + (e - b));
-  for (size_t i = 0; i < pos; ++i) {
-    tmp.data_[i] = data_[i];
-  }
-  for (size_t i = b; i < e; ++i) {
-    tmp.data_[pos + (i - b)] = rhs.data_[i];
-  }
-  for (size_t i = pos; i < size_; ++i) {
-    tmp.data_[i + (e - b)] = data_[i];
-  }
-  swap(tmp);
-}
+// ^^^^^^^^^^^^^insert и erase без векторов
 
 template< class T >
 topit::Vector< T >::VectorIterator::VectorIterator():
@@ -520,6 +506,44 @@ typename topit::Vector< T >::ConstVectorIterator topit::Vector< T >::cend() cons
   return ConstVectorIterator(data_ + size_);
 }
 
+// вспомогательные insert и erase
+template< class T >
+void topit::Vector< T >::insertRangeAtIndex(size_t pos, const T* src, size_t count)
+{
+  if (pos > size_) {
+    throw std::out_of_range("bad insert position");
+  }
+
+  Vector< T > tmp(size_ + count);
+  for (size_t i = 0; i < pos; ++i) {
+    tmp.data_[i] = data_[i];
+  }
+  for (size_t i = 0; i < count; ++i) {
+    tmp.data_[pos + i] = src[i];
+  }
+  for (size_t i = pos; i < size_; ++i) {
+    tmp.data_[i + count] = data_[i];
+  }
+  swap(tmp);
+}
+
+template< class T >
+void topit::Vector< T >::eraseRangeAtIndex(size_t pos, size_t count)
+{
+  if (pos > size_ || pos + count > size_) {
+    throw std::out_of_range("bad erase range");
+  }
+
+  Vector< T > tmp(size_ - count);
+  for (size_t i = 0; i < pos; ++i) {
+    tmp.data_[i] = data_[i];
+  }
+  for (size_t i = pos + count; i < size_; ++i) {
+    tmp.data_[i - count] = data_[i];
+  }
+  swap(tmp);
+}
+
 template< class T >
 size_t topit::Vector< T >::iteratorToIndex(VectorIterator pos) const
 {
@@ -536,11 +560,29 @@ size_t topit::Vector< T >::iteratorToIndex(VectorIterator pos) const
 
   return static_cast< size_t >(pos.ptr_ - data_);
 }
+// -------------------^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+template< class T >
+void topit::Vector< T >::insert(size_t pos, const Vector< T >& rhs, size_t b, size_t e)
+{
+  if (pos > size_ || b > e || e > rhs.size_) {
+    throw std::out_of_range("bad range insert");
+  }
+  insertRangeAtIndex(pos, rhs.data_ + b, e - b);
+}
 
 template< class T >
 void topit::Vector< T >::insert(VectorIterator pos, const T& val)
 {
   insert(iteratorToIndex(pos), val);
+}
+
+template< class T >
+void topit::Vector< T >::insert(VectorIterator pos, size_t count, const T& val)
+{
+  size_t id = iteratorToIndex(pos);
+  Vector< T > tmp(count, val);
+  insert(id, tmp, 0, tmp.getSize());
 }
 
 template< class T >
@@ -564,7 +606,7 @@ void topit::Vector< T >::erase(VectorIterator pos)
   if (id >= size_) {
     throw std::out_of_range("bad erase iterator");
   }
-  erase(id);
+  eraseRangeAtIndex(id, 1);
 }
 
 template< class T >
@@ -577,14 +619,17 @@ void topit::Vector< T >::erase(VectorIterator first, VectorIterator last)
     throw std::out_of_range("bad erase range");
   }
 
-  Vector< T > tmp(size_ - (lastId - firstId));
-  for (size_t i = 0; i < firstId; ++i) {
-    tmp.data_[i] = data_[i];
+  eraseRangeAtIndex(firstId, lastId - firstId);
+}
+
+template< class T >
+void topit::Vector< T >::erase(VectorIterator pos, size_t count)
+{
+  size_t id = iteratorToIndex(pos);
+  if (id > size_ || id + count > size_) {
+    throw std::out_of_range("bad erase count");
   }
-  for (size_t i = lastId; i < size_; ++i) {
-    tmp.data_[i - (lastId - firstId)] = data_[i];
-  }
-  swap(tmp);
+  eraseRangeAtIndex(id, count);
 }
 
 #endif
