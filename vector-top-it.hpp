@@ -70,9 +70,11 @@ namespace topit {
     };
 
     void insert(VectorIterator pos, const T& val); // 3 штуки
-    void erase(VectorIterator pos); // 3 штуки
     template< class IT >
-    void insert(VectorIterator pos, IT begin, IT end); //
+    void insert(VectorIterator pos, IT begin, IT end); 
+
+    void erase(VectorIterator pos); // 3 штуки
+    void erase(VectorIterator first, VectorIterator last);
     ///
 
     VectorIterator begin() noexcept;
@@ -533,6 +535,56 @@ size_t topit::Vector< T >::iteratorToIndex(VectorIterator pos) const
   }
 
   return static_cast< size_t >(pos.ptr_ - data_);
+}
+
+template< class T >
+void topit::Vector< T >::insert(VectorIterator pos, const T& val)
+{
+  insert(iteratorToIndex(pos), val);
+}
+
+template< class T >
+template< class IT >
+void topit::Vector< T >::insert(VectorIterator pos, IT beginIt, IT endIt)
+{
+  size_t id = iteratorToIndex(pos);
+  Vector< T > tmp;
+
+  for (IT it = beginIt; it != endIt; ++it) {
+    tmp.pushBack(*it);
+  }
+
+  insert(id, tmp, 0, tmp.getSize());
+}
+
+template< class T >
+void topit::Vector< T >::erase(VectorIterator pos)
+{
+  size_t id = iteratorToIndex(pos);
+  if (id >= size_) {
+    throw std::out_of_range("bad erase iterator");
+  }
+  erase(id);
+}
+
+template< class T >
+void topit::Vector< T >::erase(VectorIterator first, VectorIterator last)
+{
+  size_t firstId = iteratorToIndex(first);
+  size_t lastId = iteratorToIndex(last);
+
+  if (firstId > lastId) {
+    throw std::out_of_range("bad erase range");
+  }
+
+  Vector< T > tmp(size_ - (lastId - firstId));
+  for (size_t i = 0; i < firstId; ++i) {
+    tmp.data_[i] = data_[i];
+  }
+  for (size_t i = lastId; i < size_; ++i) {
+    tmp.data_[i - (lastId - firstId)] = data_[i];
+  }
+  swap(tmp);
 }
 
 #endif
