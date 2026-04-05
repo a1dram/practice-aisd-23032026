@@ -196,6 +196,89 @@ bool test24() {
   v.insert(1, rhs, 1, 3);
   return v.getSize() == 4 && v[0] == 10 && v[1] == 2 && v[2] == 3 && v[3] == 20;
 }
+
+/// с итераторами
+bool test25() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(3);
+
+  Vector< int >::VectorIterator it = v.begin();
+  ++it;
+  v.insert(it, 2);
+
+  return v.getSize() == 3 && v[0] == 1 && v[1] == 2 && v[2] == 3;
+}
+
+bool test26() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(4);
+
+  Vector< int >::VectorIterator it = v.begin();
+  ++it;
+  size_t idx = 2;
+  v.insert(it, idx, 9);
+
+  return v.getSize() == 4 && v[0] == 1 && v[1] == 9 && v[2] == 9 && v[3] == 4;
+}
+
+bool test27() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(4);
+
+  int arr[2] = {2, 3};
+  Vector< int >::VectorIterator it = v.begin();
+  ++it;
+  v.insert(it, arr, arr + 2);
+
+  return v.getSize() == 4 && v[0] == 1 && v[1] == 2 && v[2] == 3 && v[3] == 4;
+}
+
+bool test28() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.pushBack(3);
+
+  Vector< int >::VectorIterator it = v.begin();
+  ++it;
+  v.erase(it);
+
+  return v.getSize() == 2 && v[0] == 1 && v[1] == 3;
+}
+
+bool test29() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.pushBack(3);
+  v.pushBack(4);
+
+  Vector< int >::VectorIterator first = v.begin();
+  ++first;
+  Vector< int >::VectorIterator last = first;
+  ++last;
+  ++last;
+  v.erase(first, last);
+
+  return v.getSize() == 2 && v[0] == 1 && v[1] == 4;
+}
+
+bool test30() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.pushBack(3);
+  v.pushBack(4);
+
+  Vector< int >::VectorIterator it = v.begin();
+  ++it;
+  v.erase(it, 2);
+
+  return v.getSize() == 2 && v[0] == 1 && v[1] == 4;
+}
 ///
 
 int main() {
@@ -225,10 +308,18 @@ int main() {
     {test19, "Void swap func tests"},
     {test20, "Move constuctor"},
     {test21, "Move assigment operator"},
-    ///  домашка на 06042026
+    /// домашка на 06042026
     {test22, "Insert by index"},
     {test23, "Erase by index"},
     {test24, "Insert vector range by index"},
+    /// домашняя работа с итераторами
+    {test25, "Insert one element by iterator"},
+    {test26, "Insert count copies by iterator"},
+    {test27, "Insert range by iterator"},
+    {test28, "Erase one element by iterator"},
+    {test29, "Erase range by iterators"},
+    {test30, "Erase count elements by iterator"}
+    ///
   };
 
   size_t count = sizeof(tests) / sizeof(case_t);
@@ -254,7 +345,7 @@ int main() {
 
   std::cout << "SUMMARY\n";
   std::cout << result << " : TEST RESULTS\n";
-  std::cout << fails << ": failed tests\n";
-  std::cout << successes << ": passed tests\n";
+  std::cout << fails << " failed tests\n";
+  std::cout << successes << " passed tests\n";
 }
 

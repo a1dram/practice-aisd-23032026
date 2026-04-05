@@ -2,6 +2,7 @@
 #define VECTOR_TOP_IT_HPP
 
 #include <stdexcept>
+#include <utility>
 
 namespace topit {
   template < class T >
@@ -186,6 +187,8 @@ topit::Vector<T>::Vector(Vector<T>&& rhs) noexcept:
   capacity_(rhs.capacity_)
 {
   rhs.data_ = nullptr;
+  rhs.size_ = 0;
+  rhs.capacity_ = 0;
 }
 
 template< class T >
