@@ -38,13 +38,49 @@ namespace topit {
     /// Домашняя работа
     /// 1. Реализовать итераторы для вектора, итераторы не тестировать
     /// 2. Придумать по 3 штуки insert/erase с итераторами ()
-    struct VectorIterator; // с const/ не const итераторами
-    void insert(VectorIterator pos, const T& val); // 3 штуки (первый)
-    void erase(VectorIterator pos); // 3 штуки
+    struct VectorIterator
+    {
+      VectorIterator();
+      explicit VectorIterator(T* ptr);
 
+      T& operator*() const;
+      T* operator->() const;
+      VectorIterator& operator++();
+      VectorIterator operator++(int);
+      bool operator==(const VectorIterator& rhs) const noexcept;
+      bool operator!=(const VectorIterator& rhs) const noexcept;
+
+      T* ptr_;
+    };
+
+    struct ConstVectorIterator
+    {
+      ConstVectorIterator();
+      explicit ConstVectorIterator(const T* ptr);
+      ConstVectorIterator(VectorIterator rhs);
+
+      const T& operator*() const;
+      const T* operator->() const;
+      ConstVectorIterator& operator++();
+      ConstVectorIterator operator++(int);
+      bool operator==(const ConstVectorIterator& rhs) const noexcept;
+      bool operator!=(const ConstVectorIterator& rhs) const noexcept;
+
+      const T* ptr_;
+    };
+
+    void insert(VectorIterator pos, const T& val); // 3 штуки
+    void erase(VectorIterator pos); // 3 штуки
     template< class IT >
-    void insert(VectorIterator pos, IT begin, IT end); // ( второй)
+    void insert(VectorIterator pos, IT begin, IT end); //
     ///
+
+    VectorIterator begin() noexcept;
+    VectorIterator end() noexcept;
+    ConstVectorIterator begin() const noexcept;
+    ConstVectorIterator end() const noexcept;
+    ConstVectorIterator cbegin() const noexcept;
+    ConstVectorIterator cend() const noexcept;
 
     T& operator[](size_t id) noexcept;
     const T& operator[](size_t id) const noexcept;
@@ -52,6 +88,8 @@ namespace topit {
     const T& at(size_t id) const;
 
     private:
+      size_t iteratorToIndex(VectorIterator pos) const;
+
       T* data_;
       size_t size_;
       size_t capacity_;       
@@ -328,4 +366,113 @@ void topit::Vector< T >::insert(size_t pos, const Vector< T >& rhs, size_t b, si
   swap(tmp);
 }
 
+template< class T >
+topit::Vector< T >::VectorIterator::VectorIterator():
+  ptr_(nullptr)
+{}
+
+template< class T >
+topit::Vector< T >::VectorIterator::VectorIterator(T* ptr):
+  ptr_(ptr)
+{}
+
+template< class T >
+T& topit::Vector< T >::VectorIterator::operator*() const
+{
+  return *ptr_;
+}
+
+template< class T >
+T* topit::Vector< T >::VectorIterator::operator->() const
+{
+  return ptr_;
+}
+
+template< class T >
+typename topit::Vector< T >::VectorIterator&
+topit::Vector< T >::VectorIterator::operator++()
+{
+  ++ptr_;
+  return *this;
+}
+
+template< class T >
+typename topit::Vector< T >::VectorIterator
+topit::Vector< T >::VectorIterator::operator++(int)
+{
+  VectorIterator tmp(*this);
+  ++(*this);
+  return tmp;
+}
+
+template< class T >
+bool topit::Vector< T >::VectorIterator::operator==(const VectorIterator& rhs) const noexcept
+{
+  return ptr_ == rhs.ptr_;
+}
+
+template< class T >
+bool topit::Vector< T >::VectorIterator::operator!=(const VectorIterator& rhs) const noexcept
+{
+  return !(*this == rhs);
+}
+
+template< class T >
+topit::Vector< T >::ConstVectorIterator::ConstVectorIterator():
+  ptr_(nullptr)
+{}
+
+template< class T >
+topit::Vector< T >::ConstVectorIterator::ConstVectorIterator(const T* ptr):
+  ptr_(ptr)
+{}
+
+template< class T >
+topit::Vector< T >::ConstVectorIterator::ConstVectorIterator(VectorIterator rhs):
+  ptr_(rhs.ptr_)
+{}
+
+template< class T >
+const T& topit::Vector< T >::ConstVectorIterator::operator*() const
+{
+  return *ptr_;
+}
+
+template< class T >
+const T* topit::Vector< T >::ConstVectorIterator::operator->() const
+{
+  return ptr_;
+}
+
+template< class T >
+typename topit::Vector< T >::ConstVectorIterator&
+topit::Vector< T >::ConstVectorIterator::operator++()
+{
+  ++ptr_;
+  return *this;
+}
+
+template< class T >
+typename topit::Vector< T >::ConstVectorIterator
+topit::Vector< T >::ConstVectorIterator::operator++(int)
+{
+  ConstVectorIterator tmp(*this);
+  ++(*this);
+  return tmp;
+}
+
+template< class T >
+bool topit::Vector< T >::ConstVectorIterator::operator==(const ConstVectorIterator& rhs) const noexcept
+{
+  return ptr_ == rhs.ptr_;
+}
+
+template< class T >
+bool topit::Vector< T >::ConstVectorIterator::operator!=(const ConstVectorIterator& rhs) const noexcept
+{
+  return !(*this == rhs);
+}
+
 #endif
+
+
