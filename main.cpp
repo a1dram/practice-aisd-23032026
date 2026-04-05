@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include "vector-top-it.hpp"
 
 using topit::Vector;
@@ -160,7 +161,7 @@ bool test21() {
   Vector< int > yav;
 
   yav = std::move(v);
-  return yav == v;
+  return yav == cpy;
 }
 
 /// домашка на 06042026
@@ -179,6 +180,21 @@ bool test23() {
   v.pushBack(3);
   v.erase(1);
   return v.getSize() == 2 && v[0] == 1 && v[1] == 3;
+}
+
+bool test24() {
+  Vector< int > v;
+  v.pushBack(10);
+  v.pushBack(20);
+
+  Vector< int > rhs;
+  rhs.pushBack(1);
+  rhs.pushBack(2);
+  rhs.pushBack(3);
+  rhs.pushBack(4);
+
+  v.insert(1, rhs, 1, 3);
+  return v.getSize() == 4 && v[0] == 10 && v[1] == 2 && v[2] == 3 && v[3] == 20;
 }
 ///
 
@@ -212,6 +228,7 @@ int main() {
     ///  домашка на 06042026
     {test22, "Insert by index"},
     {test23, "Erase by index"},
+    {test24, "Insert vector range by index"},
   };
 
   size_t count = sizeof(tests) / sizeof(case_t);

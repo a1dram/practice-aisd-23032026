@@ -308,6 +308,24 @@ void topit::Vector< T >::erase(size_t pos)
   swap(tmp);
 }
 
+template< class T >
+void topit::Vector< T >::insert(size_t pos, const Vector< T >& rhs, size_t b, size_t e)
+{
+  if (pos > size_ || b > e || e > rhs.size_) {
+    throw std::out_of_range("bad range insert");
+  }
+
+  Vector< T > tmp(size_ + (e - b));
+  for (size_t i = 0; i < pos; ++i) {
+    tmp.data_[i] = data_[i];
+  }
+  for (size_t i = b; i < e; ++i) {
+    tmp.data_[pos + (i - b)] = rhs.data_[i];
+  }
+  for (size_t i = pos; i < size_; ++i) {
+    tmp.data_[i + (e - b)] = data_[i];
+  }
+  swap(tmp);
+}
+
 #endif
-
-
