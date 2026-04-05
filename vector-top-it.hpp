@@ -473,6 +473,68 @@ bool topit::Vector< T >::ConstVectorIterator::operator!=(const ConstVectorIterat
   return !(*this == rhs);
 }
 
+template< class T >
+typename topit::Vector< T >::VectorIterator topit::Vector< T >::begin() noexcept
+{
+  return VectorIterator(data_);
+}
+
+template< class T >
+typename topit::Vector< T >::VectorIterator topit::Vector< T >::end() noexcept
+{
+  if (data_ == nullptr) {
+    return VectorIterator(nullptr);
+  }
+  return VectorIterator(data_ + size_);
+}
+
+template< class T >
+typename topit::Vector< T >::ConstVectorIterator topit::Vector< T >::begin() const noexcept
+{
+  return ConstVectorIterator(data_);
+}
+
+template< class T >
+typename topit::Vector< T >::ConstVectorIterator topit::Vector< T >::end() const noexcept
+{
+  if (data_ == nullptr) {
+    return ConstVectorIterator(nullptr);
+  }
+  return ConstVectorIterator(data_ + size_);
+}
+
+template< class T >
+typename topit::Vector< T >::ConstVectorIterator topit::Vector< T >::cbegin() const noexcept
+{
+  return ConstVectorIterator(data_);
+}
+
+template< class T >
+typename topit::Vector< T >::ConstVectorIterator topit::Vector< T >::cend() const noexcept
+{
+  if (data_ == nullptr) {
+    return ConstVectorIterator(nullptr);
+  }
+  return ConstVectorIterator(data_ + size_);
+}
+
+template< class T >
+size_t topit::Vector< T >::iteratorToIndex(VectorIterator pos) const
+{
+  if (size_ == 0) {
+    if (pos.ptr_ == nullptr) {
+      return 0;
+    }
+    throw std::out_of_range("bad iterator");
+  }
+
+  if (pos.ptr_ < data_ || pos.ptr_ > data_ + size_) {
+    throw std::out_of_range("bad iterator");
+  }
+
+  return static_cast< size_t >(pos.ptr_ - data_);
+}
+
 #endif
 
 
