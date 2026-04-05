@@ -31,7 +31,7 @@ namespace topit {
     void pushFront(const T& val);
     void pushBack(const T& val);
 
-    /// Классная работа 30032026 (copy/swap, swap уже после того как всё получилось), всё протестировать
+    /// Домашка с 30032026 (copy/swap, swap уже после того как всё получилось), всё протестировать
     void insert(size_t pos, const T& val);
     void insert(size_t pos, const Vector< T >& rhs, size_t b, size_t e); // в заданную позицию вставить диапозон значений, как я понял от b до e
     void erase(size_t pos);
@@ -41,10 +41,10 @@ namespace topit {
     struct VectorIterator; // с const/ не const итераторами
     void insert(VectorIterator pos, const T& val); // 3 штуки (первый)
     void erase(VectorIterator pos); // 3 штуки
-    ///
 
     template< class IT >
-    void insert(VectorIterator pos, IT begin, IT end); // второй
+    void insert(VectorIterator pos, IT begin, IT end); // ( второй)
+    ///
 
     T& operator[](size_t id) noexcept;
     const T& operator[](size_t id) const noexcept;
@@ -57,12 +57,10 @@ namespace topit {
       size_t capacity_;       
   };
 
-  /// дзшка  
   template< class T >
   bool operator==(const Vector<T>& lhs, const Vector<T>& rhs);
   template< class T >
   bool operator!=(const Vector<T>& lhs, const Vector<T>& rhs);
-  ///
 }
 
 template< class T >
@@ -220,10 +218,10 @@ size_t topit::Vector< T >::getCapacity() const noexcept {
 
 template< class T >
 void topit::Vector< T >::pushFront(const T& val) {
-  Vector< T > result(getSize() + 1);
+  Vector< T > result(size_ + 1);
   result[0] = val;
-  for (size_t i = 0; i < getSise(); ++i) {
-    retult[i + 1] = (*this)[i];
+  for (size_t i = 0; i < size_; ++i) {
+    result[i + 1] = (*this)[i];
   }
   // менять копию
   // Если были исключения -> деструктор копирования освободит ресурсы, вектор не изменится
@@ -273,6 +271,41 @@ bool topit::operator==(const Vector<T>& lhs, const Vector<T>& rhs) {
 template< class T >
 bool topit::operator!=(const Vector<T>& lhs, const Vector<T>& rhs) {
   return !(lhs == rhs);
+}
+
+template< class T >
+void topit::Vector< T >::insert(size_t pos, const T& val)
+{
+  if (pos > size_) {
+    throw std::out_of_range("bad insert position");
+  }
+
+  Vector< T > tmp(size_ + 1);
+  for (size_t i = 0; i < pos; ++i) {
+    tmp.data_[i] = data_[i];
+  }
+  tmp.data_[pos] = val;
+  for (size_t i = pos; i < size_; ++i) {
+    tmp.data_[i + 1] = data_[i];
+  }
+  swap(tmp);
+}
+
+template< class T >
+void topit::Vector< T >::erase(size_t pos)
+{
+  if (pos >= size_) {
+    throw std::out_of_range("bad erase position");
+  }
+
+  Vector< T > tmp(size_ - 1);
+  for (size_t i = 0; i < pos; ++i) {
+    tmp.data_[i] = data_[i];
+  }
+  for (size_t i = pos + 1; i < size_; ++i) {
+    tmp.data_[i - 1] = data_[i];
+  }
+  swap(tmp);
 }
 
 #endif

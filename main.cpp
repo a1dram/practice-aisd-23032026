@@ -163,6 +163,25 @@ bool test21() {
   return yav == v;
 }
 
+/// домашка на 06042026
+bool test22() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(3);
+  v.insert(1, 2);
+  return v.getSize() == 3 && v[0] == 1 && v[1] == 2 && v[2] == 3;
+}
+
+bool test23() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.pushBack(3);
+  v.erase(1);
+  return v.getSize() == 2 && v[0] == 1 && v[1] == 3;
+}
+///
+
 int main() {
   using test_f = bool(*)();
   using case_t = std::pair< test_f, const char* >;
@@ -189,8 +208,10 @@ int main() {
     {test18, "Copy assigment operator"},
     {test19, "Void swap func tests"},
     {test20, "Move constuctor"},
-    {test21, "Move assigment operator"}
-    ///
+    {test21, "Move assigment operator"},
+    ///  домашка на 06042026
+    {test22, "Insert by index"},
+    {test23, "Erase by index"},
   };
 
   size_t count = sizeof(tests) / sizeof(case_t);
