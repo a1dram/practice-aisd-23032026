@@ -121,7 +121,8 @@ bool test16() {
   b[1] = 10;
   return a != b;
 }
-///
+
+/// практика 30 03 2026
 
 bool test17() {
   Vector< int > v(2, 0);
@@ -279,7 +280,15 @@ bool test30() {
 
   return v.getSize() == 2 && v[0] == 1 && v[1] == 4;
 }
-///
+/// практика 06 04 2026
+bool test31() {
+  Vector< int > v{1, 2};
+  return (v.getSize() == 2) && (v[0] == 1) && (v[1] == 2);
+}
+bool test32() {
+  Vector< int > v{};
+  return v.isEmpty();
+}
 
 int main() {
   using test_f = bool(*)();
@@ -318,7 +327,9 @@ int main() {
     {test27, "Insert range by iterator"},
     {test28, "Erase one element by iterator"},
     {test29, "Erase range by iterators"},
-    {test30, "Erase count elements by iterator"}
+    {test30, "Erase count elements by iterator"},
+    {test31, "test31"},
+    {test32, "test32"}
     ///
   };
 

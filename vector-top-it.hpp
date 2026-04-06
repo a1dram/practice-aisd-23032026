@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <utility>
+#include <initializer_list>
 
 namespace topit {
   template < class T >
@@ -17,6 +18,8 @@ namespace topit {
     Vector< T >& operator=(const Vector< T >& );
     Vector(Vector<T>&&) noexcept;
     Vector<T>& operator=(Vector<T>&&) noexcept;
+
+    explicit Vector(std::initializer_list< T > il);
     
     size_t getSize() const noexcept;
     bool isEmpty() const noexcept;
@@ -24,7 +27,7 @@ namespace topit {
 
     size_t getCapacity() const noexcept;
 
-    /// В конце пары делали
+    /// В конце пары 30 03 2026 делали
     // Vector< T >& move_assign(Vector< T >& rhs) noexcept;
     // Vector< T >& unstable_copy_assign(const Vector< T >& rhs);
     ///
@@ -32,7 +35,7 @@ namespace topit {
     void pushFront(const T& val);
     void pushBack(const T& val);
 
-        /// Домашка с 30032026 (copy/swap, swap уже после того как всё получилось), всё протестировать
+    /// Домашка с 30032026 (copy/swap, swap уже после того как всё получилось), всё протестировать
     void insert(size_t pos, const T& val);
     void insert(size_t pos, const Vector< T >& rhs, size_t b, size_t e); // в заданную позицию вставить диапозон значений, как я понял от b до e
     void erase(size_t pos);
@@ -146,6 +149,16 @@ topit::Vector< T >::Vector(size_t size) :
   size_(size),
   capacity_(size) 
 {}
+
+template< class T >
+topit::Vector< T >::Vector(std::initializer_list< T > il) : 
+  Vector(il.size())
+{
+  size_t i = 0;
+  for (auto it = il.begin(); it != il.end(); ++it) {
+    data_[i++] = *it;
+  }  
+}
 
 // template< class T >
 // topit::Vector< T >::Vector(size_t size, const T& val) : 
