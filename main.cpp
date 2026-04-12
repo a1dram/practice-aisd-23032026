@@ -290,6 +290,41 @@ bool test32() {
   return v.isEmpty();
 }
 
+/// дзшка на 13.04.2026
+
+bool test33() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.reverse(10);
+  return v.getSize() == 2 && v.getCapacity() == 10 && v[0] == 1 && v[1] == 2;
+}
+
+bool test34() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.reverse(1);
+  return v.getSize() == 2 && v.getCapacity() == 2 && v[0] == 1 && v[1] == 2;
+}
+
+bool test35() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.reverse(10);
+  v.shrinkToFit();
+  return v.getSize() == 2 && v.getCapacity() == 2 && v[0] == 1 && v[1] == 2;
+}
+
+bool test36() {
+  Vector< int > v;
+  v.reverse(10);
+  v.shrinkToFit();
+  return v.getSize() == 0 && v.getCapacity() == 0;
+}
+///
+
 int main() {
   using test_f = bool(*)();
   using case_t = std::pair< test_f, const char* >;
@@ -329,8 +364,12 @@ int main() {
     {test29, "Erase range by iterators"},
     {test30, "Erase count elements by iterator"},
     {test31, "test31"},
-    {test32, "test32"}
-    ///
+    {test32, "test32"},
+    /// дзшка на 13.04.2026
+    {test33, "reverse increases capacity and preserves elements"},
+    {test34, "reverse does nothing when new capacity is not larger"},
+    {test35, "shrinkToFit reduces capacity to size"},
+    {test36, "shrinkToFit resets empty vector capacity to zero"},
   };
 
   size_t count = sizeof(tests) / sizeof(case_t);

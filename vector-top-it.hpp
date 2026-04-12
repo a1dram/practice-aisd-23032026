@@ -34,7 +34,17 @@ namespace topit {
 
     void pushFront(const T& val);
     void pushBack(const T& val);
+    
+    /// Дзшка на 13.04.2025
+    void reverse(size_t k);
+    void shrinkToFit();
 
+    void repeatPushBack(const T& val, size_t k);
+    void repeatInsert(size_t id, const T& val, size_t k);
+    template< class IT >
+    void rangedPushBack(IT beg, size_t k);
+    ///
+  
     /// Домашка с 30032026 (copy/swap, swap уже после того как всё получилось), всё протестировать
     void insert(size_t pos, const T& val);
     void insert(size_t pos, const Vector< T >& rhs, size_t b, size_t e); // в заданную позицию вставить диапозон значений, как я понял от b до e
@@ -312,6 +322,74 @@ void topit::Vector< T >::pushBack(const T& val)
 
   data_[size_] = val;
   ++size_;
+}
+
+template< class T >
+void topit::Vector< T >::reverse(size_t k) {
+  if (k <= capacity_) {
+    return;
+  }
+
+  Vector< T > v(k);
+  for (size_t i = 0; i < size_; ++i) {
+    // v[i] = std::move((*this)[i])
+    v[i] = data_[i];
+  }
+  v.size_ = size_;
+  swap(v);
+}
+
+template< class T >
+void topit::Vector< T >::shrinkToFit() {
+  if (size_ == capacity_) {
+    return;
+  }
+
+  if (size_ == 0) {
+    Vector< T > v;
+    swap(v);
+    return;
+  }
+
+  Vector< T > v(size_);
+  for (size_t i = 0; i < size_; ++i) {
+    v[i] = data_[i];
+  }
+  swap(v);
+}
+
+// template< class T >
+// void topit::Vector< T >::pushBack(const T& val) {
+
+// }
+
+template< class T >
+void topit::Vector< T >::repeatPushBack(const T& val, size_t k) {
+
+  // Хватает ли памяти на ещё k элементов?
+  // Если не хватает, надо чтоб хватало на k элементов
+  // добавляем элементы в конец
+
+  Vector< T > cpy(*this);
+  for (size_t i = 0; i < k; ++i) {
+    cpy.pushBack(val);
+  }
+  swap(cpy);
+}
+
+// template < class T, class IT >
+// void topit::Vector< T >::rangedPushBack(IT beg, size_t k) {
+//   // size_t count = end - beg;
+//   //  зарезервировать место под count + getSize()
+//   // вставлять элементы от beg до end
+// }
+
+template< class T >
+void topit::Vector< T >::repeatInsert(size_t id, const T& val, size_t k) {
+  Vector< T > v;
+  v.reverse(getSize() + k);
+  // собираем части вектора до id, потом части вектора val k раз
+  // затем собираем части после id
 }
 
 template< class T >
