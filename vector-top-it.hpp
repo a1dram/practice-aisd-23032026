@@ -397,10 +397,28 @@ void topit::Vector< T >::rangedPushBack(IT beg, size_t k) {
 
 template< class T >
 void topit::Vector< T >::repeatInsert(size_t id, const T& val, size_t k) {
-  Vector< T > v;
-  v.reverse(getSize() + k);
+  // Vector< T > v;
+  // v.reverse(getSize() + k);
   // собираем части вектора до id, потом части вектора val k раз
   // затем собираем части после id
+  if (id > size_) {
+    throw std::out_of_range("bad insert position");
+  }
+
+  Vector< T > v;
+  v.reverse(size_ + k);
+
+  for (size_t i = 0; i < id; ++i) {
+    v.pushBack(data_[i]);
+  }
+  for (size_t i = 0; i < k; ++i) {
+    v.pushBack(val);
+  }
+  for (size_t i = id; i < size_; ++i) {
+    v.pushBack(data_[i]);
+  }
+
+  swap(v);
 }
 
 template< class T >

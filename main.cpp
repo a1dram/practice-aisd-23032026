@@ -338,6 +338,21 @@ bool test38() {
   v.rangedPushBack(arr, 3);
   return v.getSize() == 4 && v[0] == 1 && v[1] == 2 && v[2] == 3 && v[3] == 4;
 }
+
+bool test39() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(4);
+  v.repeatInsert(1, 9, 2);
+  return v.getSize() == 4 && v[0] == 1 && v[1] == 9 && v[2] == 9 && v[3] == 4;
+}
+
+bool test40() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.repeatInsert(0, 8, 2);
+  return v.getSize() == 3 && v[0] == 8 && v[1] == 8 && v[2] == 1;
+}
 ///
 
 int main() {
@@ -387,6 +402,8 @@ int main() {
     {test36, "shrinkToFit resets empty vector capacity to zero"},
     {test37, "repeatPushBack appends k copies to the end"},
     {test38, "rangedPushBack appends k elements from range"},
+    {test39, "repeatInsert inserts k copies by index"},
+    {test40, "repeatInsert works at vector beginning"},
   };
 
   size_t count = sizeof(tests) / sizeof(case_t);
