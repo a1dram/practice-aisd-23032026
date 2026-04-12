@@ -370,19 +370,30 @@ void topit::Vector< T >::repeatPushBack(const T& val, size_t k) {
   // Если не хватает, надо чтоб хватало на k элементов
   // добавляем элементы в конец
 
-  Vector< T > cpy(*this);
-  for (size_t i = 0; i < k; ++i) {
-    cpy.pushBack(val);
+  if (size_ + k > capacity_) {
+    reverse(size_ + k);
   }
-  swap(cpy);
+  for (size_t i = 0; i < k; ++i) {
+    data_[size_] = val;
+    ++size_;
+  }
 }
 
-// template < class T, class IT >
-// void topit::Vector< T >::rangedPushBack(IT beg, size_t k) {
-//   // size_t count = end - beg;
-//   //  зарезервировать место под count + getSize()
-//   // вставлять элементы от beg до end
-// }
+template < class T >
+template < class IT >
+void topit::Vector< T >::rangedPushBack(IT beg, size_t k) {
+  //  зарезервировать место под count + getSize()
+  //  вставлять элементы от beg до end
+
+  if (size_ + k > capacity_) {
+    reverse(size_ + k);
+  }
+  for (size_t i = 0; i < k; ++i) {
+    data_[size_] = *beg;
+    ++beg;
+    ++size_;
+  }
+}
 
 template< class T >
 void topit::Vector< T >::repeatInsert(size_t id, const T& val, size_t k) {

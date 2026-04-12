@@ -323,6 +323,21 @@ bool test36() {
   v.shrinkToFit();
   return v.getSize() == 0 && v.getCapacity() == 0;
 }
+
+bool test37() {
+  Vector< int > v;
+  v.pushBack(1);
+  v.repeatPushBack(7, 3);
+  return v.getSize() == 4 && v[0] == 1 && v[1] == 7 && v[2] == 7 && v[3] == 7;
+}
+
+bool test38() {
+  Vector< int > v;
+  v.pushBack(1);
+  int arr[3] = {2, 3, 4};
+  v.rangedPushBack(arr, 3);
+  return v.getSize() == 4 && v[0] == 1 && v[1] == 2 && v[2] == 3 && v[3] == 4;
+}
 ///
 
 int main() {
@@ -370,6 +385,8 @@ int main() {
     {test34, "reverse does nothing when new capacity is not larger"},
     {test35, "shrinkToFit reduces capacity to size"},
     {test36, "shrinkToFit resets empty vector capacity to zero"},
+    {test37, "repeatPushBack appends k copies to the end"},
+    {test38, "rangedPushBack appends k elements from range"},
   };
 
   size_t count = sizeof(tests) / sizeof(case_t);
